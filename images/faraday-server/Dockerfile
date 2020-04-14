@@ -12,17 +12,14 @@ WORKDIR /faraday
 RUN git checkout tags/v3.10.2 -b v3.10.2
 
 # Install the server's system dependencies
-RUN apt install -y  python build-essential ipython \
-    python-setuptools python-pip python-dev \
+RUN apt install -y python3.6 build-essential ipython3 \
+    python3-setuptools python3-pip python3.6-dev \
     libssl-dev libffi-dev pkg-config libssl-dev \
     libffi-dev libxml2-dev libxslt1-dev libfreetype6-dev \
     libpng-dev libpq-dev
 
 # Install the server's python dependencies
 RUN pip install -U -r requirements_server.txt
-
-# Temporary fix for incompatible dependency
-RUN pip install --force-reinstall itsdangerous==0.24
 
 # Apply default configuration files
 RUN mkdir -p /root/.faraday/config && \
