@@ -1,23 +1,21 @@
-version: "3"
+version: "3.7"
 
 services:
   faraday-server-db:
     image: postgres:9.4
+    restart: unless-stopped
     volumes:
       - "faraday-server-db-data:/var/lib/postgresql/data"
     environment:
       - POSTGRES_USER=faraday
       - POSTGRES_PASSWORD=changeme
       - POSTGRES_DB=faraday
-    restart: unless-stopped
 
   faraday-server-app:
     build:
       context: ./images/faraday-server
     image: pbehnke/faraday-server:latest
-    ports:
-      - "5985:5985"
-      - "9000:9000"
+    restart: unless-stopped
     volumes:
       - "faraday-server-app-data:/root/.faraday"
     environment:
@@ -28,9 +26,9 @@ services:
       - FARADAY_SUPERUSER_NAME=Admin
       - FARADAY_SUPERUSER_EMAIL=admin@example.com
       - FARADAY_SUPERUSER_PASSWORD=changeme
-    depends_on:
-      - faraday-server-db
-    restart: unless-stopped
+    ports:
+      - "5985:5985"
+      - "9000:9000"
 
 volumes:
   faraday-server-db-data:
