@@ -73,15 +73,25 @@ if __name__ == "__main__":
     arg_parser.add_argument("--faraday-root", type=str, required=True)
     arg_parser.add_argument("--faraday-data", type=str, required=True)
     # Postgres options
-    arg_parser.add_argument("--pg-user", type=str, required=True)
-    arg_parser.add_argument("--pg-pass", type=str, required=True)
-    arg_parser.add_argument("--pg-db", type=str, required=True)
-    arg_parser.add_argument("--pg-host", type=str, required=True)
+    arg_parser.add_argument("--pg-user", type=str, required=False)
+    arg_parser.add_argument("--pg-pass", type=str, required=False)
+    arg_parser.add_argument("--pg-db", type=str, required=False)
+    arg_parser.add_argument("--pg-host", type=str, required=False)
     # Faraday options
-    arg_parser.add_argument("--su-mail", type=str, required=True)
-    arg_parser.add_argument("--su-name", type=str, required=True)
-    arg_parser.add_argument("--su-pass", type=str, required=True)
+    arg_parser.add_argument("--su-mail", type=str, required=False)
+    arg_parser.add_argument("--su-name", type=str, required=False)
+    arg_parser.add_argument("--su-pass", type=str, required=False)
     args = arg_parser.parse_args()
+    
+    args['pg-user'] = args.get('pg-user', os.getenv("POSTGRES_USER", "faraday"))
+    args['pg-pass'] = args.get('pg-pass', os.getenv("POSTGRES_PASSWORD", "changeme"))
+    args['pg-db'] = args.get('pg-db', os.getenv("POSTGRES_DB", "faraday"))
+    args['pg-host'] = args.get('pg-host', os.getenv("faraday-postgres"))
+    
+    args['su-mail'] = args.get('su-mail', os.getenv("FARADAY_SUPERUSER_EMAIL", "admin@example.com"))
+    args['su-name'] = args.get('su-name', os.getenv("FARADAY_SUPERUSER_NAME", "Admin"))
+    args['su-pass'] = args.get('su-pass', os.getenv("FARADAY_SUPERUSER_PASSWORD", "changeme"))
+    
     # Set global variables
     FARADAY_ROOT_DIR = args.faraday_root
     FARADAY_DATA_DIR = args.faraday_data
